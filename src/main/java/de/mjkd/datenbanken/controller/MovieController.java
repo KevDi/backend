@@ -31,6 +31,11 @@ public class MovieController {
         return movies;
     }
 
+    @RequestMapping("/listmovies")
+    public List<Movie> listAll() {
+        return movieService.listAll();
+    }
+
     @RequestMapping(value = "/movies", method = RequestMethod.POST)
     public Movie create(@RequestBody Movie movie) {
         return movieService.create(movie);
@@ -50,6 +55,12 @@ public class MovieController {
     public List<Person> listActors(@PathVariable String name) {
         Movie mov = movieService.read(name);
         return movieService.findActors(mov);
+    }
+
+    @RequestMapping(value = "/movies/{name}/regisseur", method = RequestMethod.GET)
+    public Person readRegisseur(@PathVariable String name) {
+        Movie mov = movieService.read(name);
+        return movieService.findRegisseur(mov);
     }
 
     @RequestMapping(value = "/movies/search/searchByYear", method = RequestMethod.GET)

@@ -3,6 +3,7 @@ package de.mjkd.datenbanken.service;
 import de.mjkd.datenbanken.domain.Movie;
 import de.mjkd.datenbanken.domain.MovieRole;
 import de.mjkd.datenbanken.domain.Person;
+import de.mjkd.datenbanken.domain.Role;
 import de.mjkd.datenbanken.repository.MovieRepository;
 import de.mjkd.datenbanken.repository.MovieRoleRepository;
 import de.mjkd.datenbanken.repository.PersonRepository;
@@ -37,6 +38,11 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public List<Movie> listAll() {
+        return movieRepository.findAll();
+    }
+
+    @Override
     public Movie create(Movie movie) {
         return movieRepository.save(movie);
     }
@@ -56,7 +62,9 @@ public class MovieServiceImpl implements MovieService {
         List<MovieRole> movieRolesList = movieRoleRepository.findByMovie(movie);
         List<Person> personList = new ArrayList<>();
         for(MovieRole movieRole : movieRolesList) {
-            personList.add(movieRole.getPerson());
+            if (movieRole.getRole() == Role.ACTOR){
+                personList.add(movieRole.getPerson());
+            }
         }
         return personList;
     }
@@ -69,5 +77,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Page<Movie> findByYearBetween(String yearFrom, String yearTo, Pageable pageRequest) {
         return movieRepository.findMoviesByYearBetween(yearFrom, yearTo, pageRequest);
+    }
+
+    @Override
+    public Person findRegisseur(Movie movie) {
+        MovieRole movieRole = movieRoleRepository.findByMovieAndRole(movie, Role.REGISSEUR);
+        return movieRole.getPerson();
     }
 }
