@@ -56,8 +56,7 @@ public class MovieServiceImpl implements MovieService {
         List<MovieRole> movieRolesList = movieRoleRepository.findByMovie(movie);
         List<Person> personList = new ArrayList<>();
         for(MovieRole movieRole : movieRolesList) {
-            Person pers = personRepository.findOne(movieRole.getPerson().getId());
-            personList.add(pers);
+            personList.add(movieRole.getPerson());
         }
         return personList;
     }
