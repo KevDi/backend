@@ -33,11 +33,6 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<Movie> listAllByPage(Pageable pageable) {
-        return movieRepository.findAll(pageable);
-    }
-
-    @Override
     public List<Movie> listAll() {
         return movieRepository.findAll();
     }
@@ -53,8 +48,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<Movie> searchByName(String name, Pageable pageRequest) {
-        return movieRepository.findByNameContaining(name, pageRequest);
+    public List<Movie> searchByName(String name ) {
+        return movieRepository.findByNameContaining(name);
     }
 
     @Override
@@ -70,18 +65,38 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<Movie> findByYear(String year, Pageable pageRequest) {
-        return movieRepository.findMoviesByYear(year,pageRequest);
+    public List<Movie> findByYear(String year ) {
+        return movieRepository.findMoviesByYear(year);
     }
 
     @Override
-    public Page<Movie> findByYearBetween(String yearFrom, String yearTo, Pageable pageRequest) {
-        return movieRepository.findMoviesByYearBetween(yearFrom, yearTo, pageRequest);
+    public List<Movie> findByYearBetween(String yearFrom, String yearTo  ) {
+        return movieRepository.findMoviesByYearBetween(yearFrom, yearTo );
     }
 
     @Override
     public Person findRegisseur(Movie movie) {
         MovieRole movieRole = movieRoleRepository.findByMovieAndRole(movie, Role.REGISSEUR);
         return movieRole.getPerson();
+    }
+
+    @Override
+    public void deleteMovie(String id) {
+        Movie movie = movieRepository.findOne(id);
+        List<MovieRole> roles = movieRoleRepository.findByMovie(movie);
+        movieRepository.delete(movie);
+        movieRoleRepository.delete(roles);
+    }
+
+    @Override
+    public Movie update(String id, Movie movie) {
+        Movie oldMovie = movieRepository.findOne(id);
+        oldMovie.setGenres(movie.getGenres());
+        oldMovie.setName(movie.getName());
+        oldMovie.setRating(movie.getRating());
+        oldMovie.setTags(movie.getTags());
+        oldMovie.setYear(movie.getYear());
+        return movieRepository.save(oldMovie);
+
     }
 }

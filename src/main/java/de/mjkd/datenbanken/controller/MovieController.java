@@ -2,13 +2,18 @@ package de.mjkd.datenbanken.controller;
 
 import de.mjkd.datenbanken.domain.Movie;
 import de.mjkd.datenbanken.domain.Person;
+import de.mjkd.datenbanken.exception.MovieNotFoundException;
+import de.mjkd.datenbanken.exception.PersonNotFoundException;
 import de.mjkd.datenbanken.repository.MovieRepository;
 import de.mjkd.datenbanken.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,12 +31,6 @@ public class MovieController {
     }
 
     @RequestMapping("/movies")
-    public Page<Movie> list(Pageable pageable) {
-        Page<Movie> movies = movieService.listAllByPage(pageable);
-        return movies;
-    }
-
-    @RequestMapping("/listmovies")
     public List<Movie> listAll() {
         return movieService.listAll();
     }
@@ -47,29 +46,50 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/movies/search/searchByName", method = RequestMethod.GET)
-    public Page<Movie> searchByName(@RequestParam String name, Pageable pageable) {
-        return movieService.searchByName(name, pageable);
+    public List<Movie> searchByName(@RequestParam String name) {
+        return movieService.searchByName(name);
     }
 
     @RequestMapping(value = "/movies/{name}/actors", method = RequestMethod.GET)
     public List<Person> listActors(@PathVariable String name) {
         Movie mov = movieService.read(name);
+        if (mov == null) {
+            throw new MovieNotFoundException("Movie with name " + name + " not found");
+        }
         return movieService.findActors(mov);
     }
 
     @RequestMapping(value = "/movies/{name}/regisseur", method = RequestMethod.GET)
     public Person readRegisseur(@PathVariable String name) {
         Movie mov = movieService.read(name);
+        if (mov == null) {
+            throw new MovieNotFoundException("Movie with name " + name + " not found");
+        }
         return movieService.findRegisseur(mov);
     }
 
     @RequestMapping(value = "/movies/search/searchByYear", method = RequestMethod.GET)
-    public Page<Movie> listMoviesByYear(@RequestParam String year, Pageable pageRequest) {
-        return movieService.findByYear(year, pageRequest);
+    public List<Movie> listMoviesByYear(@RequestParam String year ) {
+        return movieService.findByYear(year);
     }
 
     @RequestMapping(value = "/movies/search/searchByYearBetween", method = RequestMethod.GET)
-    public Page<Movie> listMoviesByYear(@RequestParam String yearFrom, @RequestParam String yearTo, Pageable pageRequest) {
-        return movieService.findByYearBetween(yearFrom, yearTo, pageRequest);
+    public List<Movie> listMoviesByYear(@RequestParam String yearFrom, @RequestParam String yearTo ) {
+        return movieService.findByYearBetween(yearFrom, yearTo);
+    }
+
+    @RequestMapping(value = "/movies/{id}", method = RequestMethod.DELETE)
+    public void deleteMovie(@PathVariable String id) {
+        movieService.deleteMovie(id);
+    }
+
+    @RequestMapping(value = "/movies/{id}", method = RequestMethod.PUT)
+    public Movie updateMovie(@PathVariable String id, @RequestBody Movie movie) {
+        return movieService.update(id, movie);
+    }
+
+    @ExceptionHandler(MovieNotFoundException.class)
+    public void handleMovieNotFound(MovieNotFoundException exception, HttpServletResponse respone) throws IOException {
+        respone.sendError(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 }

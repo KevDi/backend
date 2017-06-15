@@ -12,13 +12,14 @@ import java.util.List;
  */
 public interface MovieService {
 
-    Page<Movie> listAllByPage(Pageable pageable);
     List<Movie> listAll();
     Movie create(Movie movie);
     Movie read(String name);
-    Page<Movie> searchByName(String name, Pageable pageRequest);
+    List<Movie> searchByName(String name );
     List<Person> findActors(Movie movie);
     Person findRegisseur(Movie movie);
-    Page<Movie> findByYear(String year, Pageable pageRequest);
-    Page<Movie> findByYearBetween(String yearFrom, String yearTo, Pageable pageRequest);
+    List<Movie> findByYear(String year );
+    List<Movie> findByYearBetween(String yearFrom, String yearTo);
+    void deleteMovie(String id);
+    Movie update(String id, Movie movie);
 }

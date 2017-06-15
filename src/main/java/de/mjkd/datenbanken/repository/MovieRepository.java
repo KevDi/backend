@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface MovieRepository extends MongoRepository<Movie, String> {
     Movie findMovieByName(String name);
-    Page<Movie> findByNameContaining(String name, Pageable pageRequest);
-    Page<Movie> findMoviesByYear(String year, Pageable pageRequest);
-    Page<Movie> findMoviesByYearBetween(String year1, String year2, Pageable pageRequest);
+    List<Movie> findByNameContaining(String name);
+    List<Movie> findMoviesByYear(String year );
+    List<Movie> findMoviesByYearBetween(String year1, String year2);
 }

@@ -33,8 +33,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Page<Person> listAllByPage(Pageable pageable) {
-        return personRepository.findAll(pageable);
+    public List<Person> listAllByPage() {
+        return personRepository.findAll();
     }
 
     @Override
@@ -48,13 +48,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Page<Person> searchByAgeBetween(int ageFrom, int ageTo, Pageable pageable) {
-        return personRepository.findByAgeBetween(ageFrom, ageTo, pageable);
+    public List<Person> searchByAgeBetween(int ageFrom, int ageTo ) {
+        return personRepository.findByAgeBetween(ageFrom, ageTo);
     }
 
     @Override
-    public Page<Person> searchByAge(int age, Pageable pageable) {
-        return personRepository.findByAge(age, pageable);
+    public List<Person> searchByAge(int age ) {
+        return personRepository.findByAge(age);
     }
 
     @Override
@@ -68,7 +68,22 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Page<Person> searchByFirstnameOrLastname(String name, Pageable pageable) {
-        return personRepository.findByFirstNameContainingOrLastNameContaining(name, name, pageable);
+    public List<Person> searchByFirstnameOrLastname(String name) {
+        return personRepository.findByFirstNameContainingOrLastNameContaining(name, name);
+    }
+
+    @Override
+    public void deletePerson(String id) {
+        Person person = personRepository.findOne(id);
+        List<MovieRole> movieRoles = movieRoleRepository.findByPerson(person);
+        personRepository.delete(person);
+        movieRoleRepository.delete(movieRoles);
+    }
+
+    @Override
+    public Person update(String id, Person person) {
+        Person oldPerson = personRepository.findOne(id);
+        person.setId(oldPerson.getId());
+        return personRepository.save(person);
     }
 }

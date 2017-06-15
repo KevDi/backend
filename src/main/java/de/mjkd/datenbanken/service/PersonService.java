@@ -13,11 +13,13 @@ import java.util.List;
  */
 public interface PersonService {
 
-    Page<Person> listAllByPage(Pageable pageable);
+    List<Person> listAllByPage();
     Person create(Person person);
     Person read(String firstname, String lastname);
-    Page<Person> searchByAge(int age, Pageable pageable);
-    Page<Person> searchByAgeBetween(int ageFrom, int ageTo, Pageable pageable);
-    Page<Person> searchByFirstnameOrLastname(String name, Pageable pageable);
+    List<Person> searchByAge(int age);
+    List<Person> searchByAgeBetween(int ageFrom, int ageTo);
+    List<Person> searchByFirstnameOrLastname(String name);
     List<Movie> findMovies(Person person);
+    void deletePerson(String id);
+    Person update(String id, Person person);
 }
