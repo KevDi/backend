@@ -41,9 +41,9 @@ public class MovieController {
         return movieService.create(movie);
     }
 
-    @RequestMapping(value = "/movies/{name}", method = RequestMethod.GET)
-    public Movie read(@PathVariable String name) {
-        return movieService.read(name);
+    @RequestMapping(value = "/movies/{id}", method = RequestMethod.GET)
+    public Movie read(@PathVariable String id) {
+        return movieService.read(id);
     }
 
     @RequestMapping(value = "/movies/search/searchByName", method = RequestMethod.GET)
@@ -51,20 +51,20 @@ public class MovieController {
         return movieService.searchByName(name);
     }
 
-    @RequestMapping(value = "/movies/{name}/actors", method = RequestMethod.GET)
-    public List<Person> listActors(@PathVariable String name) {
-        Movie mov = movieService.read(name);
+    @RequestMapping(value = "/movies/{id}/actors", method = RequestMethod.GET)
+    public List<Person> listActors(@PathVariable String id) {
+        Movie mov = movieService.read(id);
         if (mov == null) {
-            throw new MovieNotFoundException("Movie with name " + name + " not found");
+            throw new MovieNotFoundException("Movie with name " + id + " not found");
         }
         return movieService.findActors(mov);
     }
 
-    @RequestMapping(value = "/movies/{name}/regisseur", method = RequestMethod.GET)
-    public Person readRegisseur(@PathVariable String name) {
-        Movie mov = movieService.read(name);
+    @RequestMapping(value = "/movies/{id}/regisseur", method = RequestMethod.GET)
+    public Person readRegisseur(@PathVariable String id) {
+        Movie mov = movieService.read(id);
         if (mov == null) {
-            throw new MovieNotFoundException("Movie with name " + name + " not found");
+            throw new MovieNotFoundException("Movie with name " + id + " not found");
         }
         return movieService.findRegisseur(mov);
     }

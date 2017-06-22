@@ -43,8 +43,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie read(String name) {
-        return movieRepository.findMovieByName(name);
+    public Movie read(String id) {
+        return movieRepository.findOne(id);
     }
 
     @Override
@@ -97,6 +97,5 @@ public class MovieServiceImpl implements MovieService {
         oldMovie.setTags(movie.getTags());
         oldMovie.setYear(movie.getYear());
         return movieRepository.save(oldMovie);
-
     }
 }
